@@ -293,7 +293,7 @@ contract SnpMaster is Ownable, Pausable {
                 .mul(pool.accSnpPerShare)
                 .div(1e12)
                 .sub(user.rewardDebt);
-            if (pending > 0) {
+            if (pending > 0 && pool.lockPeriod == 0) {
                 uint256 _depositTime = now - user.depositTime;
                 if (_depositTime < 1 days) {
                     uint256 _actualReward = _depositTime
@@ -355,7 +355,7 @@ contract SnpMaster is Ownable, Pausable {
         );
         if (pending > 0) {
             uint256 _depositTime = now - user.depositTime;
-            if (_depositTime < 1 days) {
+            if (_depositTime < 1 days && pool.lockPeriod == 0) {
                 uint256 _actualReward = _depositTime
                     .mul(pending)
                     .mul(1e18)
