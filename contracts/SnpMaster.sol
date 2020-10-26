@@ -368,8 +368,8 @@ contract SnpMaster is Ownable, Pausable {
                     safeSnpTransfer(governance, _goverAomunt);
                     pending = _actualReward;
                 }
-                safeSnpTransfer(msg.sender, pending);
             }
+            safeSnpTransfer(msg.sender, pending);
         }
         if (_amount > 0) {
             user.amount = user.amount.sub(_amount);
