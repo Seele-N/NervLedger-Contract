@@ -293,17 +293,19 @@ contract SnpMaster is Ownable, Pausable {
                 .mul(pool.accSnpPerShare)
                 .div(1e12)
                 .sub(user.rewardDebt);
-            if (pending > 0 && pool.lockPeriod == 0) {
-                uint256 _depositTime = now - user.depositTime;
-                if (_depositTime < 1 days) {
-                    uint256 _actualReward = _depositTime
-                        .mul(pending)
-                        .mul(1e18)
-                        .div(1 days)
-                        .div(1e18);
-                    uint256 _goverAomunt = pending.sub(_actualReward);
-                    safeSnpTransfer(governance, _goverAomunt);
-                    pending = _actualReward;
+            if (pending > 0) {
+                if (pool.lockPeriod == 0) {
+                    uint256 _depositTime = now - user.depositTime;
+                    if (_depositTime < 1 days) {
+                        uint256 _actualReward = _depositTime
+                            .mul(pending)
+                            .mul(1e18)
+                            .div(1 days)
+                            .div(1e18);
+                        uint256 _goverAomunt = pending.sub(_actualReward);
+                        safeSnpTransfer(governance, _goverAomunt);
+                        pending = _actualReward;
+                    }
                 }
                 safeSnpTransfer(msg.sender, pending);
             }
@@ -355,17 +357,19 @@ contract SnpMaster is Ownable, Pausable {
         );
         if (pending > 0) {
             uint256 _depositTime = now - user.depositTime;
-            if (_depositTime < 1 days && pool.lockPeriod == 0) {
-                uint256 _actualReward = _depositTime
-                    .mul(pending)
-                    .mul(1e18)
-                    .div(1 days)
-                    .div(1e18);
-                uint256 _goverAomunt = pending.sub(_actualReward);
-                safeSnpTransfer(governance, _goverAomunt);
-                pending = _actualReward;
+            if (_depositTime < 1 days) {
+                if (pool.lockPeriod == 0) {
+                    uint256 _actualReward = _depositTime
+                        .mul(pending)
+                        .mul(1e18)
+                        .div(1 days)
+                        .div(1e18);
+                    uint256 _goverAomunt = pending.sub(_actualReward);
+                    safeSnpTransfer(governance, _goverAomunt);
+                    pending = _actualReward;
+                }
+                safeSnpTransfer(msg.sender, pending);
             }
-            safeSnpTransfer(msg.sender, pending);
         }
         if (_amount > 0) {
             user.amount = user.amount.sub(_amount);
